@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admissions | British Academy</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .admission-hero {
+        padding: 65px 7%;
+        background: var(--navy);
+        color: white;
+      }
+
+      .admission-hero h1 {
+        margin: 15px 0;
+        font-size: clamp(38px, 5vw, 58px);
+      }
+
+      .admission-hero p {
+        color: #d5dce4;
+        max-width: 600px;
+      }
+
+      .admission-wrap {
+        padding: 65px 7% 90px;
+        background: var(--cream);
+      }
+
+      .admission-card {
+        max-width: 900px;
+        margin: auto;
+        padding: clamp(22px, 5vw, 48px);
+        background: white;
+        border: 1px solid var(--border);
+      }
+
+      .admission-card h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 27px;
+        margin-bottom: 8px;
+      }
+
+      .form-intro {
+        color: var(--text);
+        font-size: 13px;
+        margin-bottom: 28px;
+      }
+
+      .form-section {
+        margin-top: 32px;
+        padding-top: 25px;
+        border-top: 1px solid var(--border);
+      }
+
+      .form-section h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      .field label {
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        min-width: 0;
+        padding: 13px;
+        border: 1px solid var(--border);
+        background: #fcfbf8;
+        color: var(--navy);
+        border-radius: 0;
+        font: inherit;
+        font-size: 13px;
+      }
+
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        outline: 2px solid var(--gold);
+        outline-offset: 1px;
+      }
+
+      .consent {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 25px 0;
+        font-size: 12px;
+        color: var(--text);
+      }
+
+      .consent input {
+        margin-top: 5px;
+      }
+
+      .form-status {
+        margin-top: 18px;
+        font-size: 13px;
+        color: #24734a;
+      }
+
+      @media (max-width: 600px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .field.full {
+          grid-column: auto;
+        }
+      }
+     
+
+      .admission-btn:hover {
+        background: #1e40af;
+        transform: translateY(-2px);
+      }
+    </style>
+ 
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <img
+      src="school-logo.jpg"
+      alt="British Academy Logo"
+      class="school-logo"
+    />
+    <span class="brand-name">
+      BRITISH ACADEMY
+      <small>LEARN · LEAD · INSPIRE</small>
+    </span>
+  </a>
+</header>
+
+
+    <main>
+      <section class="admission-hero">
+        <span class="eyebrow">YOUR FUTURE STARTS HERE</span>
+        <h1>Begin your journey<br />with British Academy.</h1>
+        <p>
+          Complete the enquiry form below. Our admissions team can guide you
+          through the next steps once the form is connected to a real submission
+          service.
+        </p>
+      </section>
+
+      <section class="admission-wrap">
+        <form class="admission-card" id="admissionForm">
+          <h2>Admission Enquiry</h2>
+          <p class="form-intro">Fields marked * are required.</p>
+
+          <section class="form-section">
+            <h3>01. Student Details</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label for="studentName">Student's full name *</label>
+                <input
+                  id="studentName"
+                  name="studentName"
+                  autocomplete="name"
+                  required
+                  maxlength="100"
+                />
+              </div>
+
+              <div class="field">
+                <label for="dob">Date of birth *</label>
+                <input id="dob" name="dob" type="date" required />
+              </div>
+
+              <div class="field">
+                <label for="classApplying">Class applying for *</label>
+                <select id="classApplying" name="classApplying" required>
+                  <option value="">Select a class</option>
+                  <option>Nursery</option>
+                  <option>LKG</option>
+                  <option>UKG</option>
+                  <option>Class 1</option>
+                  <option>Class 2</option>
+                  <option>Class 3</option>
+                  <option>Class 4</option>
+                  <option>Class 5</option>
+                  <option>Class 6</option>
+                  <option>Class 7</option>
+                  <option>Class 8</option>
+                  <option>Class 9</option>
+                  <option>Class 10</option>
+                  <option>Class 11</option>
+                  <option>Class 12</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="previousSchool">Previous school (optional)</label>
+                <input
+                  id="previousSchool"
+                  name="previousSchool"
+                  maxlength="150"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3>02. Parent / Guardian Details</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label for="parentName">Parent / guardian name *</label>
+                <input
+                  id="parentName"
+                  name="parentName"
+                  autocomplete="name"
+                  required
+                  maxlength="100"
+                />
+              </div>
+
+              <div class="field">
+                <label for="relationship">Relationship to student *</label>
+                <select id="relationship" name="relationship" required>
+                  <option value="">Select relationship</option>
+                  <option>Mother</option>
+                  <option>Father</option>
+                  <option>Legal guardian</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="phone">Contact number *</label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  autocomplete="tel"
+                  inputmode="tel"
+                  pattern="[0-9+\s()-]{8,20}"
+                  required
+                  title="Enter a valid contact number"
+                />
+              </div>
+
+              <div class="field">
+                <label for="email">Email address</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  maxlength="150"
+                />
+              </div>
+
+              <div class="field full">
+                <label for="address">Residential address *</label>
+                <textarea
+                  id="address"
+                  name="address"
+                  rows="3"
+                  autocomplete="street-address"
+                  maxlength="300"
+                  required
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3>03. Additional Information</h3>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="message"
+                  >Questions or additional notes (optional)</label
+                >
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="4"
+                  maxlength="1000"
+                  placeholder="Tell us if you have any questions about admissions."
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <label class="consent">
+            <input type="checkbox" id="consent" required />
+            <span
+              >I confirm that the information provided is accurate and agree to
+              be contacted about this admission enquiry. *</span
+            >
+          </label>
+
+          <button type="submit" class="button button-gold">
+            Submit Enquiry ↗
+          </button>
+
+          <p
+            class="form-status"
+            id="formStatus"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </form>
+      </section>
+    </main>
+
+   
+<footer class="site-footer">
+  <a href="index.html" class="brand footer-brand">
+    <img
+      src="school-logo.jpg"
+      alt="British Academy Logo"
+      class="school-logo"
+    />
+  
+<span class="brand-name" style="color: white;">
+  BRITISH ACADEMY
+  <small style="color: white;">LEARN · LEAD · INSPIRE</small>
+</span>
+
+  </a>
+
+  <span>© <span id="year"></span> British Academy</span>
+</footer>
+
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      console.log("Admission JavaScript loaded");
+      console.log("ADMISSION SCRIPT RUNNING");
+
+      const dob = document.getElementById("dob");
+      dob.max = new Date().toISOString().split("T")[0];
+
+      const form = document.getElementById("admissionForm");
+      const status = document.getElementById("formStatus");
+      const submitButton = form.querySelector('button[type="submit"]');
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!form.reportValidity()) return;
+
+        const payload = {
+          student_name: form.elements.studentName.value.trim(),
+          date_of_birth: form.elements.dob.value,
+          class_applied: form.elements.classApplying.value,
+          previous_school: form.elements.previousSchool.value.trim(),
+          parent_name: form.elements.parentName.value.trim(),
+          relationship: form.elements.relationship.value,
+          phone: form.elements.phone.value.trim(),
+          email: form.elements.email.value.trim(),
+          address: form.elements.address.value.trim(),
+          note: form.elements.message.value.trim(),
+          consent: document.getElementById("consent").checked,
+        };
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+        status.style.color = "#8a6508";
+        status.textContent = "Submitting your admission enquiry...";
+
+        try {
+          const response = await fetch("/api/admissions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(
+              result.error || "Submission failed. Please try again.",
+            );
+          }
+
+          status.style.color = result.emailSent ? "#24734a" : "#8a6508";
+
+          status.textContent = result.emailSent
+            ? `Success! Your enquiry has been saved. Application ID: ${result.applicationId}. The school email notification was sent.`
+            : `Your enquiry has been saved. Application ID: ${result.applicationId}. However, the school email notification failed.`;
+
+          form.reset();
+          dob.max = new Date().toISOString().split("T")[0];
+        } catch (error) {
+          status.style.color = "#b42318";
+          status.textContent =
+            error.message || "Unable to submit. Please try again.";
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "Submit Enquiry ↗";
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>British Academy | Admin Dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6fa;
+      color: #172033;
+    }
+    header {
+      background: #172b4d;
+      color: white;
+      padding: 22px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { margin: 0; font-size: 22px; }
+    main { padding: 30px 5%; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin: 24px 0;
+    }
+    .card, .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 3px 15px #172b4d10;
+    }
+    .card p { color: #65718a; margin: 0 0 12px; }
+    .number { font-size: 30px; font-weight: bold; }
+    input, select, button {
+      padding: 11px 13px;
+      border: 1px solid #d6dce6;
+      border-radius: 7px;
+      font: inherit;
+    }
+    button {
+      background: #c49a45;
+      color: white;
+      border: 0;
+      cursor: pointer;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .toolbar input { flex: 1; min-width: 180px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 13px 10px;
+      text-align: left;
+      border-bottom: 1px solid #edf0f5;
+    }
+    th { color: #65718a; font-size: 13px; }
+    .message { color: #526078; margin: 12px 0; }
+    @media (max-width: 600px) {
+      main { padding: 20px 4%; }
+      header { padding: 18px 4%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>British Academy</h1>
+    <button id="logout" hidden>Log out</button>
+  </header>
+
+  <main>
+    <section id="loginPanel" class="panel">
+      <h2>Admin Login</h2>
+      <p>Sign in to manage admission applications.</p>
+      <form id="loginForm">
+        <p><input id="username" placeholder="Username" required></p>
+        <p><input id="password" type="password"
+          placeholder="Password" required></p>
+        <button type="submit">Sign In</button>
+      </form>
+      <p id="loginMessage" class="message" role="status"></p>
+    </section>
+
+    <section id="dashboard" hidden>
+      <h2>Admissions Dashboard</h2>
+      <p>Review and manage submitted applications.</p>
+
+      <div class="cards">
+        <div class="card"><p>Total Applications</p>
+          <div class="number" id="total">0</div></div>
+        <div class="card"><p>Pending</p>
+          <div class="number" id="pending">0</div></div>
+        <div class="card"><p>Under Review</p>
+          <div class="number" id="review">0</div></div>
+        <div class="card"><p>Accepted</p>
+          <div class="number" id="accepted">0</div></div>
+      </div>
+
+      <section class="panel">
+        <h3>Applications</h3>
+        <div class="toolbar">
+          <input id="search" placeholder="Search student or parent">
+          <select id="classFilter">
+            <option value="">All classes</option>
+          </select>
+          <button id="refresh" type="button">Refresh</button>
+        </div>
+        <p id="statusMessage" class="message" role="status"></p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>ID</th><th>Student</th><th>Class</th>
+              <th>Parent</th><th>Phone</th><th>Date</th><th>Status</th>
+            </tr></thead>
+            <tbody id="applications"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    let records = [];
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers
+        }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || data.message || "Request failed");
+      return data;
+    }
+
+    async function checkLogin() {
+      try {
+        await api("/api/admin/me");
+        $("loginPanel").hidden = true;
+        $("dashboard").hidden = false;
+        $("logout").hidden = false;
+        await loadApplications();
+      } catch {
+        $("loginPanel").hidden = false;
+        $("dashboard").hidden = true;
+        $("logout").hidden = true;
+      }
+    }
+
+    $("loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      $("loginMessage").textContent = "Signing in...";
+      try {
+        await api("/api/admin/login", {
+          method: "POST",
+          body: JSON.stringify({
+            username: $("username").value,
+            password: $("password").value
+          })
+        });
+        $("loginMessage").textContent = "";
+        await checkLogin();
+      } catch (error) {
+        $("loginMessage").textContent = error.message;
+      }
+    });
+
+    async function loadApplications() {
+      $("statusMessage").textContent = "Loading applications...";
+      try {
+        const data = await api("/api/admin/admissions");
+        records = Array.isArray(data) ? data : (data.applications || []);
+        const classes = [...new Set(records.map(r => r.class_applied).filter(Boolean))];
+        const filter = $("classFilter");
+        const previous = filter.value;
+        filter.innerHTML = '<option value="">All classes</option>';
+        classes.forEach(c => {
+          const option = document.createElement("option");
+          option.value = c;
+          option.textContent = c;
+          filter.appendChild(option);
+        });
+        filter.value = previous;
+        render();
+        $("statusMessage").textContent = records.length + " application(s) loaded.";
+      } catch (error) {
+        $("statusMessage").textContent = error.message;
+      }
+    }
+
+    function render() {
+      const q = $("search").value.toLowerCase();
+      const selectedClass = $("classFilter").value;
+      $("total").textContent = records.length;
+      $("pending").textContent = records.filter(r => (r.status || "Pending") === "Pending").length;
+      $("review").textContent = records.filter(r => r.status === "Under Review").length;
+      $("accepted").textContent = records.filter(r => r.status === "Accepted").length;
+
+      const filtered = records.filter(r =>
+        (!selectedClass || r.class_applied === selectedClass) &&
+        [r.student_name, r.parent_name, r.phone].some(v =>
+          String(v || "").toLowerCase().includes(q))
+      );
+      const tbody = $("applications");
+      tbody.replaceChildren();
+
+      filtered.forEach(r => {
+        const tr = document.createElement("tr");
+        function cell(value) {
+          const td = document.createElement("td");
+          td.textContent = value ?? "";
+          tr.appendChild(td);
+        }
+        cell(r.id);
+        cell(r.student_name);
+        cell(r.class_applied);
+        cell(r.parent_name);
+        cell(r.phone);
+        cell(r.created_at ? new Date(r.created_at).toLocaleDateString() : "");
+
+        const td = document.createElement("td");
+        const select = document.createElement("select");
+        ["Pending", "Under Review", "Accepted", "Rejected"].forEach(s => {
+          const opt = document.createElement("option");
+          opt.value = s;
+          opt.textContent = s;
+          select.appendChild(opt);
+        });
+        select.value = r.status || "Pending";
+        select.addEventListener("change", async () => {
+          select.disabled = true;
+          try {
+            await api("/api/admin/admissions/" + encodeURIComponent(r.id) + "/status", {
+              method: "PATCH",
+              body: JSON.stringify({ status: select.value })
+            });
+            r.status = select.value;
+            render();
+            $("statusMessage").textContent = "Status updated.";
+          } catch (error) {
+            $("statusMessage").textContent = error.message;
+            select.disabled = false;
+          }
+        });
+        td.appendChild(select);
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      });
+    }
+
+    $("search").addEventListener("input", render);
+    $("classFilter").addEventListener("change", render);
+    $("refresh").addEventListener("click", loadApplications);
+
+    $("logout").addEventListener("click", async () => {
+      try {
+        await api("/api/admin/logout", { method: "POST" });
+      } finally {
+        location.reload();
+      }
+    });
+
+    checkLogin();
+  </script>
+</body>
+</html>
