@@ -1,4 +1,4 @@
-# 🎓 British Academy Website
+# 🎓 British Academy School Website
 
 The **British Academy Website** is a modern educational website designed to provide students and visitors with information about the academy, its educational programs, and its learning environment. The project focuses on a clean user interface, easy navigation, and a responsive design for a smooth browsing experience across different devices.
 
